@@ -229,6 +229,8 @@
 !>      \brief <b> Returns the eigenvalues and eigenvalues of a symmetric or 
 !>      hermitian MQC Matrix</b>
         Procedure, Public::diag => MQC_Matrix_Diagonalize
+!>      \brief <b> Iteratively diagonalizes a symmetric or Hermitian MQC Matrix</b>
+        Procedure, Public::davidson => MQC_Matrix_Davidson
 !>      \brief <b> Computes the singular value decomposition of the MQC Matrix</b>
         Procedure, Public::svd => MQC_Matrix_SVD
 !>      \brief <b> Solves the generalized eigenproblem of the MQC Matrix</b>
@@ -1102,19 +1104,36 @@
 !
 !>      \brief Compute the lowest algebraic eigenpairs using block Davidson.
         Module Subroutine MQC_Davidson(Operator,NumberOfRoots,Eigenvalues,Eigenvectors,&
-          InitialVectors,Tolerance,MaximumSubspace,MaximumIterations,Converged,&
-          Iterations,ResidualNorms)
+          MetricOperator,InitialVectors,Tolerance,MetricTolerance,MaximumSubspace,&
+          MaximumIterations,Converged,Iterations,ResidualNorms)
           Class(MQC_Linear_Operator),Intent(In)::Operator
-          Integer(Kind=int64),Intent(In)::NumberOfRoots
-          Type(MQC_Vector),Intent(Out)::Eigenvalues
-          Type(MQC_Matrix),Intent(Out)::Eigenvectors
+          Class(MQC_Linear_Operator),Optional,Intent(In)::MetricOperator
+          Integer(Kind=int64),Optional,Intent(In)::NumberOfRoots
+          Type(MQC_Vector),Optional,Intent(Out)::Eigenvalues
+          Type(MQC_Matrix),Optional,Intent(Out)::Eigenvectors
           Type(MQC_Matrix),Optional,Intent(In)::InitialVectors
-          Real(Kind=real64),Optional,Intent(In)::Tolerance
+          Real(Kind=real64),Optional,Intent(In)::Tolerance,MetricTolerance
           Integer(Kind=int64),Optional,Intent(In)::MaximumSubspace,MaximumIterations
           Logical,Optional,Intent(Out)::Converged
           Integer(Kind=int64),Optional,Intent(Out)::Iterations
           Type(MQC_Vector),Optional,Intent(Out)::ResidualNorms
         End Subroutine MQC_Davidson
+!
+!>      \brief Iteratively diagonalize a stored MQC matrix.
+        Module Subroutine MQC_Matrix_Davidson(Matrix,Eigenvalues,Eigenvectors,&
+          NumberOfRoots,MetricMatrix,InitialVectors,Tolerance,MetricTolerance,&
+          MaximumSubspace,MaximumIterations,Converged,Iterations,ResidualNorms)
+          Class(MQC_Matrix),Intent(In)::Matrix
+          Type(MQC_Vector),Optional,Intent(Out)::Eigenvalues
+          Type(MQC_Matrix),Optional,Intent(Out)::Eigenvectors
+          Integer(Kind=int64),Optional,Intent(In)::NumberOfRoots
+          Type(MQC_Matrix),Optional,Intent(In)::MetricMatrix,InitialVectors
+          Real(Kind=real64),Optional,Intent(In)::Tolerance,MetricTolerance
+          Integer(Kind=int64),Optional,Intent(In)::MaximumSubspace,MaximumIterations
+          Logical,Optional,Intent(Out)::Converged
+          Integer(Kind=int64),Optional,Intent(Out)::Iterations
+          Type(MQC_Vector),Optional,Intent(Out)::ResidualNorms
+        End Subroutine MQC_Matrix_Davidson
       End Interface
 !
 !----------------------------------------------------------------
